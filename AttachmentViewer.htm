@@ -1,0 +1,323 @@
+﻿<!DOCTYPE HTML>
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<html>
+<head>
+    <title></title>
+    <link href="styles/pcbtstyle.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="js/shiftzoom.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript">
+        var CurrectAttID = 0;
+        var BtnCloseAttachmentViewerCBTimgLeftCapImageMouseOver = new Image();
+        BtnCloseAttachmentViewerCBTimgLeftCapImageMouseOver.src = 'images/button-left-over.png';
+        var BtnCloseAttachmentViewerCBTimgRightCapImageMouseOver = new Image();
+        BtnCloseAttachmentViewerCBTimgRightCapImageMouseOver.src = 'images/button-right-over.png';
+        var BtnCloseAttachmentViewerCBTimgMiddleCapImageMouseOver = new Image();
+        BtnCloseAttachmentViewerCBTimgMiddleCapImageMouseOver.src = 'images/button-middle-over.png';
+        var BtnCloseAttachmentViewerCBTimgLeftCapImageMouseDown = new Image();
+        BtnCloseAttachmentViewerCBTimgLeftCapImageMouseDown.src = '';
+        var BtnCloseAttachmentViewerCBTimgRightCapImageMouseDown = new Image();
+        BtnCloseAttachmentViewerCBTimgRightCapImageMouseDown.src = '';
+        var BtnCloseAttachmentViewerCBTimgMiddleCapImageMouseDown = new Image();
+        BtnCloseAttachmentViewerCBTimgMiddleCapImageMouseDown.src = '';
+        var BtnCloseAttachmentViewerCBTimgLeftCapImage = new Image();
+        BtnCloseAttachmentViewerCBTimgLeftCapImage.src = 'images/button-left.png';
+        var BtnCloseAttachmentViewerCBTimgRightCapImage = new Image();
+        BtnCloseAttachmentViewerCBTimgRightCapImage.src = 'images/button-right.png';
+        var BtnCloseAttachmentViewerCBTimgMiddleCapImage = new Image();
+        BtnCloseAttachmentViewerCBTimgMiddleCapImage.src = 'images/button-middle.png';
+        function BtnCloseAttachmentViewerCBTmOverBtn(divBtn) {
+            document.all('BtnCloseAttachmentViewerCBTtdLeftCap').style.backgroundImage = "url(images/button-left-over.png)";
+            document.all('BtnCloseAttachmentViewerCBTtdRightCap').style.backgroundImage = "url('images/button-right-over.png')";
+            try { document.all('BtnCloseAttachmentViewerCBTtdButtonImage').style.backgroundImage = "url('images/button-middle-over.png')"; } catch (Exception) { }
+            try { document.all('BtnCloseAttachmentViewerCBTtdContent').style.backgroundImage = "url('images/button-middle-over.png')"; } catch (Exception) { }
+        }
+
+        function BtnCloseAttachmentViewerCBTbtnClick() {
+            $("video").each(function () {
+                $(this).get(0).pause();
+            });
+            parent.window.CloseAttachmentViewer();
+        }
+        function BtnCloseAttachmentViewerCBTmOutBtn(divBtn) {
+            document.all('BtnCloseAttachmentViewerCBTtdLeftCap').style.backgroundImage = "url(images/button-left.png)";
+            try { document.all('BtnCloseAttachmentViewerCBTtdRightCap').style.backgroundImage = "url(images/button-right.png)"; } catch (Exception) { }
+            try { document.all('BtnCloseAttachmentViewerCBTtdButtonImage').style.backgroundImage = "url(images/button-middle.png)"; } catch (Exception) { }
+            try { document.all('BtnCloseAttachmentViewerCBTtdContent').style.backgroundImage = "url(images/button-middle.png)"; } catch (Exception) { }
+        }
+        var contentHeight;
+        var ImageWidth;
+        var stepAttachmentArray = parent.window.GetAttachments();
+        $(document).ready(function () {
+            contentHeight = window.innerHeight;
+            $("#tblMain").css("height", contentHeight);
+            contentHeight -= 120;
+            ImageWidth = $("#tdAttachmentContainer").width();
+            $("#tblImageRight").css("height", contentHeight);
+            $("#divThumbNails").css("height", contentHeight);
+            contentHeight -= 70;
+            var currentStep = eval("parent.window.step" + parent.window.CurrentStepIndex);
+            if (currentStep) {
+                document.all("txtStep").innerText = currentStep.StepTitle;
+            } else {
+                document.all("txtStep").innerText = "";
+            }
+            LoadThumbNails();
+            var attID = getUrlVars()["attID"];
+            var attachment = parent.window.getCurrentStepAttachment(attID);
+            ShowAttachment(attachment.DocType, attachment.FileName, attID, attachment.Name);
+        });
+        function ShowAttachmentFromThumbnail(AttachmentID) {
+            var attachment = parent.window.getCurrentStepAttachment(AttachmentID);
+            ShowAttachment(attachment.DocType, attachment.FileName, AttachmentID, attachment.Name);
+        }
+        function getUrlVars() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function LoadThumbNails() {
+            var tblThumbnails = "#tblThumbnails";
+            var tblThumbnailsRows = tblThumbnails + " tr";
+            $(tblThumbnailsRows).remove();
+
+            var currentStep = eval("parent.window.step" + parent.window.CurrentStepIndex);
+            stepAttachmentArray = parent.window.GetAttachments();
+            for (var i = 0; i < stepAttachmentArray.length; i++) {
+                var ClasstcMainForAttachmentThumbnail = '';
+                var AttachmentTable = 'AttachmentTable';
+                var StyleClassForImageAtt = 'StyleClassForImageAtt';
+                var tcAttNameClass = 'tcAttNameClass';
+                var DocType = stepAttachmentArray[i].DocType;
+                var ImgURL = stepAttachmentArray[i].FileName;
+                var AttachmentURL = stepAttachmentArray[i].FileName;
+                if (DocType != "I") {
+                    ImgURL = "images/attachment.png";
+                }
+                var AttID = stepAttachmentArray[i].ID;
+                var DocName = stepAttachmentArray[i].Name;
+                var imgStatus = stepAttachmentArray[i].Viewed;
+
+
+                if (imgStatus == "Y") {
+                    StyleClassForImageAtt = "StyleClassForImageAttViewed";
+                    tcAttNameClass = "tcAttNameClassViewed";
+                    ClasstcMainForAttachmentThumbnail = "ClasstcMainForAttachmentThumbnailViewed";
+                    AttachmentTable = "AttachmentTableViewed";
+                    imgStatus = "<TD style=\"padding-left:10px\"><IMG align=absMiddle src='images/check.png'></TD>";
+                }
+                if (AttID == CurrectAttID) {
+                    StyleClassForImageAtt = "StyleClassForImageAttViewedSelected";
+                    tcAttNameClass = "tcAttNameClassViewedSelected";
+                    ClasstcMainForAttachmentThumbnail = "ClasstcMainForAttachmentThumbnailViewedSelected";
+                    AttachmentTable = "AttachmentTableViewedSelected";
+                }
+
+                var strHTML = "<tr>";
+                strHTML += "<TD class='" + ClasstcMainForAttachmentThumbnail + "'>";
+                var tblString = "<TABLE class='" + AttachmentTable + "' onclick=\"javascript:ShowAttachmentFromThumbnail('" + AttID + "');\" border=0 style='cursor:hand'>";
+                strHTML += tblString;
+                strHTML += "<TBODY>";
+                strHTML += "<TR>";
+                strHTML += "<TD class='" + StyleClassForImageAtt + "'><IMG class='" + StyleClassForImageAtt + "'  src='" + ImgURL + "' style='width:84px;height:84px'></TD></TR>";
+                strHTML += "<TR>";
+                strHTML += "<TD class='" + tcAttNameClass + "' style='text-align:center'>";
+                strHTML += "<TABLE style='width:0px'>";
+                strHTML += "<TBODY>";
+                strHTML += "<TR>";
+                strHTML += imgStatus;
+                strHTML += "<TD style=\"max-width: 90px;text-overflow: ellipsis; overflow: hidden;\"><SPAN class='PropLabelWhiteBold'><nobr>" + DocName + "</nobr></SPAN></TD></TR>";
+                strHTML += "</TBODY>";
+                strHTML += "</TABLE>";
+                strHTML += "</TD></TR>";
+                strHTML += "</TBODY>";
+                strHTML += "</table>";
+                strHTML += "</TD>";
+                strHTML += "</tr>";
+                $(tblThumbnails).append(strHTML);
+            }
+        }
+        function ShowAttachment(docType, url, attID, DocName) {
+            CurrectAttID = attID;
+            parent.window.LogAttachmentViewed(attID);
+
+            document.all("lblAttachmentNameUnderImage").innerText = DocName;
+            switch (docType) {
+                case "R":
+                    window.open(url);
+                    document.all("divImage").style.display = "none";
+                    document.all("divVideo").style.display = "none";
+                    break;
+                case "I":
+                    showGraphic(url);
+                    break;
+                case "V":
+                    showVideo(url);
+                    break;
+            }
+            LoadThumbNails();
+        }
+        function showVideo(url) {
+            var videoCntr = $("#controlVideo");
+            document.all("divImage").style.display = "none";
+            videoCntr.find("source").attr("src", url);
+            document.all("divVideo").style.display = "";
+            videoCntr.load();
+        }
+        function showGraphic(URL) {
+            document.all("divImage").style.display = "";
+            document.all("divVideo").style.display = "none";
+
+            var objImage = document.all("imgAttachment");
+            shiftzoom.remove(objImage);
+            objImage.src = URL;
+            objImage.height = "1";
+            objImage.width = "1";
+            pageHeight = contentHeight;
+            var MaxHeight = pageHeight;
+            var maxWidth = document.all("trImage").offsetWidth - 50;
+            MaxHeight = document.all("trImage").offsetHeight;
+            MaxHeight = pageHeight;
+            var dimension = parent.window.ResizeImage(URL, maxWidth, MaxHeight, true);
+            objImage.style.height = dimension[1];
+            objImage.style.width = dimension[0];
+            objImage.height = dimension[1];
+            objImage.width = dimension[0];
+            document.all("divImage").style.height = dimension[1];
+            document.all("divImage").style.width = dimension[0];
+            shiftzoom.add(objImage);
+            shiftzoom.zooming(objImage, -1);
+            document.all("divVideo").style.display = "none";
+            document.all("divImage").style.display = "";
+            //document.all("tblImageControls").style.display = "";
+            //document.all("tblVideoControls").style.display = "none";
+            pageHeight = parseInt(pageHeight) + 50;
+            document.all("trContent").style.height = pageHeight;
+
+            //	document.all("divThumbNails").style.height = document.all("tdsideBar").offsetHeight;
+        }
+        function SetImage(url) {
+
+            var img = new Image();
+            var imgWidth;
+            var imgHeight;
+            img.onload = function () {
+                imgWidth = this.width;
+                imgHeight = this.height;
+                //alert(this.width + 'x' + this.height);
+            }
+            img.src = url;
+            var dimension = parent.window.ResizeImage(img.src, ImageWidth, contentHeight, true);
+            $("#imgAttachment").css("height", dimension[1]);
+
+            $("#imgAttachment").css("width", dimension[0]);
+            document.all("imgAttachment").src = url;
+        }
+
+
+        function magnifyImage(perChg) {
+            var zoomProp = shiftzoom.get(document.all("imgAttachment"), 'currentxyz');
+            perChg = zoomProp.z + perChg;
+
+            shiftzoom.zooming(document.all("imgAttachment"), perChg);
+        }
+
+        function restoreOriginalSize(strImgURL) {
+            var newImgObj = new Image();
+            newImgObj.src = strImgURL;
+            document.all("imgAttachment").width = newImgObj.width;
+            document.all("imgAttachment").height = newImgObj.height;
+        }
+    </script>
+</head>
+
+<body>
+    <table id="tblMain">
+        <tr style="width: 100%;">
+            <td style="width: 100%; text-align: center; vertical-align: text-top" id="tdMainContent">
+                <table id="tblAttachment" style="width: 100%;">
+                    <tr>
+                        <td class="TDStepAttachmentProperty" colspan="3">
+                            <span id="txtStep" class="StepAttachmentProperty"></span>
+                        </td>
+                    </tr>
+                    <tr id="trContent">
+                        <td id="tdSideBar" class="ImageViewerSideBar">
+                            <div id="divThumbNails" style="overflow: auto; width: 140px;">
+                                <table id="tblThumbnails" style="width: 90%">
+                                </table>
+                            </div>
+                        </td>
+                        <td style="width: 2px">&nbsp;
+                        </td>
+                        <td id="tdAttachmentContainer" class="TDMainImageViewerRight" align="center">
+                            <table class="tblImageRight" style="width: 100%">
+                                <tr id="trImage">
+                                    <td id="tdImage" class="tdBigImageContainer" valign="middle" align="center">
+                                        <div id="divImage" style="text-align: center">
+                                            <img src="" id="imgAttachment" alt="Attachment" width="1" height="1" align="absmiddle" />
+                                        </div>
+                                        <div id="divVideo" style="display: none">
+                                            <video id="controlVideo" controls>
+                                                <source src="movie.mp4" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr height="25px">
+                                    <td>
+                                        <span class="lblAttachmentNameUnderImage" id="lblAttachmentNameUnderImage">Document Name</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr height="64">
+            <td width="100%" align="center" style="background-image: url(images/navigation-background.png); height: 66px;"
+                valign="top" colspan="2">
+                <table style="width: 100%">
+                    <tr>
+
+                        <td style="text-align: center;">
+                            <div style="margin-left: 260px;">
+                                        <img src="images/zoom-in.png" onclick="magnifyImage(100);return false;" />
+                                        <img imagealign="AbsBottom" src="images/zoom-out.png" onclick="magnifyImage(-100);return false;" />
+                            </div>
+                        </td>
+                        <td style="width: 1%; padding-right: 15px;">
+                            <table>
+                                <tr>
+                                    <td>
+
+                                        <div id="divBtnCloseAttachmentViewer" style="vertical-align: middle; align-content: center; width: 80px" onmouseover="BtnCloseAttachmentViewerCBTmOverBtn(this)" title="" onmouseout="BtnCloseAttachmentViewerCBTmOutBtn(this)" onclick="BtnCloseAttachmentViewerCBTbtnClick()">
+                                            <table id="tblBtnCloseAttachmentViewerCBT" style="Cursor: default; Width: 70px; height: 30px;">
+                                                <tr style="height: 30px">
+                                                    <td style='padding-left: 3px; background-image: url(images/button-left.png)' id='BtnCloseAttachmentViewerCBTtdLeftCap'></td>
+                                                    <td style='text-align: center; width: 100%; padding-left: 0; padding-right: 2px; background-image: url(images/button-middle.png)' id='BtnCloseAttachmentViewerCBTtdButtonImage'>
+                                                        <span class="buttonClassWhite" id="Span1" style="Width: 0%; white-space: nowrap">Return To Step</span></td>
+                                                    <td style='padding-left: 3px; background-image: url(images/button-right.png)' id='BtnCloseAttachmentViewerCBTtdRightCap'></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

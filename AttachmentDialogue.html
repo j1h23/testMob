@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="styles/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-file input[type=file] {
+                position: absolute;
+                top: 0;
+                right: 0;
+                min-width: 100%;
+                min-height: 100%;
+                font-size: 100px;
+                text-align: right;
+                filter: alpha(opacity=0);
+                opacity: 0;
+                outline: none;
+                background: white;
+                cursor: inherit;
+                display: block;
+            }
+    </style>
+    <title></title>
+</head>
+<body>
+    <div id="attachmentModal" class="container">
+        <div class="row">
+            <div class="container">
+                <div class="panel">
+                    <ul id="AttachmentContent" class="media-list">
+                        <li class="media">
+                            <div class="media-body">
+                                <small class="text-muted">No attachments yet...</small>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="panel-footer clearfix">
+                        <span class="pull-right btn btn-default btn-file" onclick="ChooseAttachment()">
+                            Select files... <input type="file" id="file" accept="image/*" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var StepInfo;
+        $(document).ready(function () {
+            StepInfo = GetStepInfo();
+            if (StepInfo) {
+                LoadAttachments();
+                if (parent.State == 'Freeze') {
+                    $('#file').prop("readonly", true);
+                } else {
+                    $('#file').prop("readonly", false);
+                    $("#file").change(UploadAttachment);
+                }
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        });
+
+        function ChooseAttachment() {
+            $("#file").click();
+        }
+
+        function LoadAttachments() {
+            if (!parent.B_IGNORE_EXTERNAL_CALL) {
+                var i,
+                    $attachmentContent = $("#AttachmentContent"),
+                    attJsonStr = window.external.GetAttachments(StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId);
+                if (attJsonStr) {
+                    var attJson = JSON.parse(attJsonStr);
+                    if (attJson.length > 0) {
+                        $attachmentContent.empty();
+                    }
+                    for (i = 0; i < attJson.length; i++) {
+                        $attachmentContent.append(
+                            $("<li></li>", {
+                                "class": "media"
+                            })
+                            .append($("<img></img>", {
+                                src: "data:" + attJson[i].FileType + ";base64," + attJson[i].Byte64Data
+                            }))
+                            .append(
+                                $("<div></div>", {
+                                    "class": "media-body",
+                                    text: attJson[i].FileName
+                                }))
+                            .append("<br />")
+                            .append(
+                                $("<small></small>", {
+                                    "class": "text-muted",
+                                    text: attJson[i].UpdateByName + " @ " + parent.ConvertMsToDateTimeHourMin(parseInt(attJson[i].UpdateTime.substr(6)))
+                                })
+                            )
+                            .append("<hr />")
+                        );
+                    }
+                }
+            }
+        }
+
+        function UploadAttachment() {
+            if (!parent.B_IGNORE_EXTERNAL_CALL) {
+                var reader,
+                    fileUploadControl = $("#file"),
+                    file = fileUploadControl.prop('files')[0];
+                if (file) {
+                    reader = new FileReader();
+                    reader.onload = function(e) {
+                        var arrayBufferResult = e.target.result;
+                        var base64Result = _arrayBufferToBase64(arrayBufferResult);
+                        window.external.SaveAttachment(base64Result, file.name, file.type, StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId);
+                        LoadAttachments();
+                        window.scrollTo(0, document.body.scrollHeight);
+                    };
+                    reader.readAsArrayBuffer(file);
+                }
+            } else {
+                alert('Disabled for debugging purposes');
+            }
+        }
+
+        function _arrayBufferToBase64(buffer) {
+            var binary = '';
+            var bytes = new Uint8Array(buffer);
+            var len = bytes.byteLength;
+            for (var i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+
+        function GetStepInfo() {
+            var stepInfo,
+                introSlidesCount = parent.IntroSlidesCount,
+                currentIndex = parent.CurrentStepIndex;
+            if (introSlidesCount !== null && currentIndex !== null && currentIndex >= introSlidesCount) {
+                stepInfo = parent.window["step" + currentIndex];
+                return stepInfo;
+            }
+            return null;
+        }
+
+        //can be used for later for larger file sizes
+        //function base64toBlob(base64Data, contentType) {
+        //    contentType = contentType || '';
+        //    var sliceSize = 1024;
+        //    var byteCharacters = atob(base64Data);
+        //    var bytesLength = byteCharacters.length;
+        //    var slicesCount = Math.ceil(bytesLength / sliceSize);
+        //    var byteArrays = new Array(slicesCount);
+
+        //    for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+        //        var begin = sliceIndex * sliceSize;
+        //        var end = Math.min(begin + sliceSize, bytesLength);
+
+        //        var bytes = new Array(end - begin);
+        //        for (var offset = begin, i = 0 ; offset < end; ++i, ++offset) {
+        //            bytes[i] = byteCharacters[offset].charCodeAt(0);
+        //        }
+        //        byteArrays[sliceIndex] = new Uint8Array(bytes);
+        //    }
+        //    return new Blob(byteArrays, { type: contentType });
+        //}
+    </script>
+</body>
+</html>

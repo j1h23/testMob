@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        Step Html Table
+    </title>
+    <script src="js/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var strippedString = parent.GlobalLimitList;
+            var regex = new RegExp('&amp;', "g");
+            strippedString = strippedString.replace(regex, '&');
+            regex = new RegExp('&gt;', "g");
+            strippedString = strippedString.replace(regex, '>');
+            regex = new RegExp('&lt;', "g");
+            strippedString = strippedString.replace(regex, '<');
+            regex = new RegExp('&quot;', "g");
+            strippedString = strippedString.replace(regex, "'");
+            var body = $('#obj1');
+            body.html(strippedString);
+        });
+        //var kendoWindow = $("#rolesWindow");
+        //kendoWindow.height = 100 + 'px';
+    </script>
+</head>
+ <body id="obj1">
+    </body>
+</html>

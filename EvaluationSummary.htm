@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <!--<link href="styles/kendo.blueopal.css" rel="stylesheet" />-->
+    <link href="styles/kendo.common.css" rel="stylesheet" />
+    <link href="styles/kendo.bootstrap.min.css" rel="stylesheet" />
+    <link href="styles/bootstrap.min.css" rel="stylesheet" />
+	<link href="styles/kendo.common-material.min.css" rel="stylesheet" />
+	<link href="styles/kendo.material.min.css" rel="stylesheet" />
+	<link href="styles/kendo.silver.css" rel="stylesheet" />
+	
+    <script src="js/jquery.min.js"></script>
+    <script src="js/kendo.web.js"></script>
+	<script src="js/kendo.all.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <form class="form-horizontal">
+                 <div class="row">
+				 <br />
+				 <br />
+                    <label class="col-xs-4 control-label" style="font-weight:normal;">
+                        Score:
+                    </label>
+					  <div class="col-xs-7">
+                        <span class="form-control" id="Competence_Percentage"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <br />
+					<label class="col-xs-4 control-label " for="name" style="font-weight:normal;">*</label>
+                    <div class="col-xs-7">
+                        <label class="radio-inline">
+                            <input type="radio" name="Decision" id="Decision" value="Yes">Competent
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="Decision" id="radio1" value="No">Not Yet Competent
+                        </label>
+                    </div>
+                </div>
+            <fieldset>
+			<br />
+                <legend>Assessment Components</legend>
+                <div class="row">
+                    <label class="col-xs-4 control-label" style="font-weight:normal;">
+                        * Training Requirements Identified:
+                    </label>
+                    <div class="col-xs-7">
+                        <textarea class="form-control" rows="2" id="Training_Requirements_Identified"></textarea>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <br />
+                    <label class="col-xs-4 control-label " for="name" style="font-weight:normal;">Job Restriction Requirements:</label>
+                    <div class="col-xs-7">
+                        <label class="radio-inline">
+                            <input type="radio" name="Job_Restriction_Requirements" id="Job_Restriction_Requirements" value="Yes"> Yes
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="Job_Restriction_Requirements" id="Radio2" value="No"> No
+                        </label>
+						<textarea  class="col-xs-10col-xs-5 form-control" rows="2" id="Job_Restriction_Notes"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                     <br />
+                    <label class="col-xs-4 control-label" for="name1" style="font-weight:normal;">Mitigation Requirements:</label>
+                    <div class="col-xs-7">
+                        <label class="radio-inline">
+                            <input type="radio" name="Mitigation_Requirements" id="Mitigation_Requirements" value="Yes"> Yes
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="Mitigation_Requirements" id="Radio4" value="No"> No
+                        </label>
+						<textarea  class="col-xs-10col-xs-5 form-control" rows="2" id="Mitigation_Requirements_Notes"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                     <br />
+                    <label class="col-xs-4 control-label" style="font-weight:normal;">
+                        Notes:
+                    </label>
+                    <div class="col-xs-7 control-label">
+                        <textarea class="form-control" rows="2" id="Notes"></textarea>
+                    </div>
+                </div>
+                </fieldset>
+                 <fieldset>
+                <legend>Signature</legend>
+                      <div class="row">
+                    <label class="col-xs-4 control-label" style="font-weight:normal;">
+                        * Assessor Signature:
+                    </label>
+                    <div class="col-xs-4">
+                        <input type="text" class="form-control" id="Assessor_Signature" />
+                    </div>
+                    <!--<label class="col-xs-2 control-label">
+                        * Date:
+                    </label>
+                    <div class="col-xs-2">
+                        <input type="date" class="form-control" id="Assessor_Signature_Date" />
+                    </div>-->
+                </div>
+                 <div class="row">
+                     <br />
+                     <label class="col-xs-4 control-label" style="font-weight:normal;">
+                         * Employee Signature:
+                     </label>
+                    <div class="col-xs-4">
+                        <input id="Employee_Signature" type="text" class="form-control" />
+                    </div>
+                </div>
+                      <div class="row">
+                          <br />
+                     <label class="col-xs-4 control-label" style="font-weight:normal;" >
+                         * Date:
+                     </label>
+                    <div class="col-xs-4">
+                        <input id="Employee_Signature_Date" style="width: 100%;" />
+                    </div>
+                   </div>
+                <div class="row">
+                    <br />
+                    <br />
+                    <div class="col-xs-8" style="font-weight:normal;">
+                        * - Required Fields
+                    </div>
+                    <div class="col-xs-3">
+                    <button class="btn btn-default"  type="button" onclick="CloseWindow()"  id="close">Cancel</button>
+                    
+                    <button class="btn btn-default" type="button" style= "margin-left:14px" onclick=" SubmitEvalSummary()" id="submit-Assessment">Submit</button>
+                    </div>
+                    <br />
+                    <!--temporary work around-->
+                    <span style="color:white">hidden</span>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <script>
+
+        $(document).ready(function () {
+            $("#Competence_Percentage").kendoProgressBar({
+                type: "percent",
+                animation: {
+                    duration: 500
+                },
+                change: function (e) {
+                    this.progressWrapper.css({
+                        "background-color": "#47ad4d",
+                        "border-color": "#47ad4d"
+
+                    });
+                }
+            });
+            $("#Employee_Signature_Date").kendoDateTimePicker({
+                value: new Date()
+            });
+            var competencePercentage = parent.GetCompetencyEvaluation();
+            $("#Competence_Percentage").data("kendoProgressBar").value(competencePercentage);
+        });
+        function CloseWindow() {
+            parent.CloseEvaluation();
+        }
+        function SubmitEvalSummary() {
+            var assessmentObject;
+            var decisionValue;
+            var jobRestrictionRequirementsValue;
+            var mitigationRequirementsValue;
+            if (ValidateEvaluationEntry()) {
+                var listOfPrintedControls = $("input[name='Decision']");
+                var i;
+                for (i = 0; i < listOfPrintedControls.length; i++) {
+
+                    if (listOfPrintedControls[i].checked) {
+                        decisionValue = listOfPrintedControls[i].value;
+                    }
+                }
+                listOfPrintedControls = $("input[name='Job_Restriction_Requirements']");
+                for (i = 0; i < listOfPrintedControls.length; i++) {
+
+                    if (listOfPrintedControls[i].checked) {
+                        jobRestrictionRequirementsValue = listOfPrintedControls[i].value;
+                    }
+                }
+                listOfPrintedControls = $("input[name='Mitigation_Requirements']");
+                for (i = 0; i < listOfPrintedControls.length; i++) {
+                    if (listOfPrintedControls[i].checked) {
+                        mitigationRequirementsValue = listOfPrintedControls[i].value;
+                    }
+                }
+                if (decisionValue != null) {
+                    var datetimepicker = $("#Employee_Signature_Date").data("kendoDateTimePicker");
+                    assessmentObject = {
+                        Decision: decisionValue,
+                        Training_Requirements_Identified: $("#Training_Requirements_Identified")[0].value,
+                        Job_Restriction_Requirements: jobRestrictionRequirementsValue,
+                        JobNotes: $("#Job_Restriction_Notes")[0].value,
+                        Mitigation_Requirements: mitigationRequirementsValue,
+                        MitigationNotes: $("#Mitigation_Requirements_Notes")[0].value,
+                        Notes: $("#Notes")[0].value,
+                        Assessor_Signature: $("#Assessor_Signature")[0].value,
+                        Employee_Signature: $("#Employee_Signature")[0].value,
+                        Employee_Signature_Date: datetimepicker.value().toJSON()
+                    };
+                    parent.SubmitEvalSummary(assessmentObject);
+                    window.external.CompleteSession();
+                    parent.window.external.Exit("", "");
+                }
+                else {
+                    alert("Please fill the required fields");
+                }
+            }
+        }
+        function ValidateEvaluationEntry() {
+            var fields = ["Training_Requirements_Identified", "Assessor_Signature", "Employee_Signature", "Employee_Signature_Date"]
+            var i, l = fields.length;
+            var fieldname;
+            for (i = 0; i < l; i++) {
+                fieldname = fields[i];
+                if ($("#" + fieldname)[0].value == "" || $("#" + fieldname)[0].value == null) {
+                    alert("Please fill the required fields");
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

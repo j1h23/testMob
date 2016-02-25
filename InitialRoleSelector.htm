@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="styles/kendo.blueopal.css" rel="stylesheet" />
+    <link href="styles/kendo.common.css" rel="stylesheet" />
+    <link href="styles/bootstrap.min.css" rel="stylesheet" />
+    <link href="styles/steplist.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <p id="role-label">Please select applicable roles<span id="forced-role-label" style="color:red; display: none"> (At least one of the roles in red are required to acknowledge current step)</span>.</p>
+        <form class="form-inline" id="role-form">
+            <!--leave code here for debuggin purposes-->
+            <!--<div class="checkbox">
+                    <label>
+                        <input type="checkbox"> Check me out
+                    </label>
+                </div>-->
+            <button id="btnRoleSubmit" class="btn btn-default" style="position: absolute; right:25px; bottom: 20px;" type="button" onclick="SubmitRoles()">Submit</button>
+        </form>
+    </div>
+    <!--<div id="menu-header">
+            <input type="radio" name="list-filter" onchange="RefreshList()" checked="checked" value="All"/>All
+            <input type="radio" name="list-filter" onchange="RefreshList()" value="Viewed"/>Viewed
+            <input type="radio" name="list-filter" onchange="RefreshList()" value="Not-Viewed"/>Not Viewed
+            <input type="radio" name="list-filter" onchange="RefreshList()" value="Flagged"/>Flagged
+            <input type="radio" name="list-filter" onchange="RefreshList()" value="Flat-List" />Flat List
+        </div>-->
+    <!--<div id="treeView" class="table"></div>-->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/kendo.web.js"></script>
+    <script>
+        $(document).ready(function() {
+            var requiredRoles = [],
+                userRoles = null,
+                roleLabel = $('#role-label'),
+                allRoles = parent.ProcedureRoles,
+                roleSettings = parent.RoleSettings,
+
+                bLoadRoles = roleSettings && roleSettings.LoadRoles,
+                bForceRoles = roleSettings && roleSettings.Forced;
+            if (roleSettings) {
+                requiredRoles = roleSettings.RequiredRoles;
+            }
+            if (bLoadRoles) {
+                userRoles = parent.UserRoles;
+            }
+            for (var i = 0; i < allRoles.length; i++) {
+                var roleItem = allRoles[i],
+                    checkBox = $('<div></div>', {
+                            "class": "checkbox"
+                        })
+                        .append($('<label></label>')
+                            .append($('<input></input>', {
+                                type: "checkbox",
+                                value: allRoles[i]
+                            }))
+                            .append(allRoles[i])
+                        );
+                if (bLoadRoles && userRoles &&
+                    $.inArray(roleItem, userRoles) != -1) {
+                    checkBox.find('input').prop('checked', true);
+                }
+                if (bForceRoles &&
+                    $.inArray(roleItem, requiredRoles) != -1) {
+                    checkBox.css('color', 'red');
+                }
+                $("#btnRoleSubmit").before(checkBox);
+            }
+            if (bForceRoles) {
+                $('#forced-role-label').show();
+            };
+        });
+
+        function SubmitRoles() {
+            var listOfCheckedItems = [],
+                listOfCheckedControls = $("input:checked");
+            for (var i = 0; i < listOfCheckedControls.length; i++) {
+                listOfCheckedItems.push(listOfCheckedControls[i].value);
+            }
+            parent.SubmitAndCloseInitialRoleSelector(listOfCheckedItems);
+        }
+    </script>
+</body>
+</html>

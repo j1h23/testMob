@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="styles/bootstrap.min.css" rel="stylesheet" />
+    <title></title>
+</head>
+<body>
+    <div id="notesModal" class="container">
+        <div class="row">
+            <div class="container">
+                <ul id="NoteContent" class="media-list">
+                    <li class="media">
+                        <div class="media-body">
+                            <small class="text-muted">No notes yet...</small>
+                        </div>
+                    </li>
+                </ul>
+                <div class="panel">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="note" placeholder="Enter Note..." />
+                        <button id="btnSubmit" class="btn input-group-addon" onclick="SaveNote()">SUBMIT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var StepInfo;
+        $(document).ready(function () {
+            StepInfo = GetStepInfo();
+            if (StepInfo) {
+                if (!parent.B_IGNORE_EXTERNAL_CALL) {
+                    LoadNotes();
+                }
+                if (parent.State == 'Freeze') {
+                    $('#note').prop("readonly", true);
+                    $('#btnSubmit').prop("disabled", true);
+                } else {
+                    $('#note').prop("readonly", false);
+                    $('#btnSubmit').prop("disabled", false);
+                }
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        });
+        function LoadNotes() {
+            var i,
+                $noteContent = $("#NoteContent"),
+                noteJsonStr = window.external.GetNotes(StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId);
+            if (noteJsonStr) {
+                var noteJson = JSON.parse(noteJsonStr);
+                if (noteJson.length > 0) {
+                    $noteContent.empty();
+                }
+                for (i = 0; i < noteJson.length; i++) {
+                    $noteContent.append(
+                        $("<li></li>", {
+                            "class": "media"
+                        })
+                        .append(
+                            $("<div></div>", {
+                                "class": "media-body",
+                                text: noteJson[i].Note
+                            }))
+                        .append("<br />")
+                        .append(
+                            $("<small></small>", {
+                                "class": "text-muted",
+                                text: noteJson[i].UpdateByName + " @ " + parent.ConvertMsToDateTimeHourMin(parseInt(noteJson[i].UpdateTime.substr(6)))
+                            })
+                        )
+                        .append("<hr />")
+                    );
+                }
+            }
+        }
+        function SaveNote() {
+            if (!parent.B_IGNORE_EXTERNAL_CALL) {
+                try {
+                    var note = $("#note").val();
+                    window.external.SaveNote(note, StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId);
+                } catch (e) {
+                    alert(e);
+                }
+                $("#note").val("");
+                LoadNotes();
+                window.scrollTo(0, document.body.scrollHeight);
+            } else {
+                alert('Disabled for debugging purposes');
+            }
+        }
+        function GetStepInfo() {
+            var stepInfo,
+                introSlidesCount = parent.IntroSlidesCount,
+                currentIndex = parent.CurrentStepIndex;
+            if (introSlidesCount !== null && currentIndex !== null && currentIndex >= introSlidesCount) {
+                stepInfo = parent.window["step" + currentIndex];
+                return stepInfo;
+            }
+            return null;
+        }
+    </script>
+</body>
+</html>

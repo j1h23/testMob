@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SmartProcedure CBT</title>
+	<link href="styles/pcbtstyle.css" rel="stylesheet" type="text/css" />
+	<script src="js/jquery.min.js" type="text/javascript">
+	</script>
+	<script src="js/PCBT.js" type="text/javascript">
+	</script>
+	<style>
+		table
+		{
+			border-collapse: collapse;
+			border-spacing: 0;
+			padding: 0px 0px 0px 0px;
+			width: 100%;
+		}
+		th, td
+		{
+			padding: 0px;
+			border: 0px;
+		}
+	</style>
+</head>
+<body>
+	<table style="background-color: white; border: 0px" id="tblMain">
+		<tbody>
+			<tr id="trCBTHeader">
+				<td>
+					<div id="divCBTHeader0">
+						<table>
+							<tbody>
+								<tr style="height: 65px">
+									<td style="background-image: url(images/Navigation-background.png); text-align: center">
+										<span style="font-family: Tahoma; color: white; font-size: 20pt; font-weight: bold;
+											white-space: nowrap;" id="lblHeading">SmartProcedure CBT</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="divCBTHeader1" style="display: none">
+						<table>
+							<tbody>
+								<tr style="height: 65px">
+									<td style="background-image: url(images/Navigation-background.png); text-align: center">
+										<span style="font-family: Tahoma; color: white; font-size: 20pt; font-weight: bold;
+											white-space: nowrap;" id="Span1">Procedure Details</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="divCBTHeader2" style="display: none">
+						<table>
+							<tbody>
+								<tr style="height: 65px">
+									<td style="background-image: url(images/Navigation-background.png); text-align: center">
+										<span style="font-family: Tahoma; color: white; font-size: 20pt; font-weight: bold;
+											white-space: nowrap;" id="Span2">Procedure Attachments</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="divCBTHeader3" style="display: none">
+						<table>
+							<tbody>
+								<tr style="height: 65px">
+									<td style="background-image: url(images/Navigation-background.png); text-align: center">
+										<span style="font-family: Tahoma; color: white; font-size: 20pt; font-weight: bold;
+											white-space: nowrap;" id="Span3">Effective Changes</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="divCBTHeader4" style="display: none">
+						<table>
+							<tbody>
+								<tr style="height: 65px">
+									<td style="background-image: url(images/Navigation-background.png); text-align: center">
+										<span style="font-family: Tahoma; color: white; font-size: 20pt; font-weight: bold;
+											white-space: nowrap;" id="Span4">Table of Contents</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="divCBTHeader5" style="display: none">
+						<table style="background-image: url(images/background-header.png);" id="tblHeaderBorder">
+							<tbody>
+								<tr style="height: 65px">
+									<td>
+										<table id="tblHeader">
+											<tbody>
+												<tr>
+													<td style="padding-bottom: 0px; padding-left: 10px; width: 100%">
+														<table style="width: 100%">
+															<tbody>
+																<tr>
+																	<td style="width: 1%">
+																		<img alt="Procedure Attachments" style="border-right-width: 0px; width: 20px; border-top-width: 0px;
+																			border-bottom-width: 0px; height: 20px; visibility: ; border-left-width: 0px; cursor: hand"
+																			id="btnProcedureAttachment" onclick="ShowProcedureDetails(GInstanceID,'Y','P');"
+																			src="images/documents.gif">
+																	</td>
+																	<td style="padding-left: 5px">
+																		<a style="font-family: Tahoma; color: white; font-size: 10pt; font-weight: bold;
+																			text-decoration: none" href="javascript:OpenProcedureDetails()"><span id="lblProcTitle">
+																				BMTP.IN.0036 - Rosemount Pressure Transmitter Calibration, Up to 200 PSI Range
+																			</span></a>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+												<tr>
+													<td style="padding-bottom: 0px; padding-left: 35px">
+														<a style="font-family: Tahoma; color: #eeee77; font-size: 10pt; text-decoration: none"
+															id="linkSectionTitle"><span id="lblSectionTitle" style="white-space: nowrap;">dasdas</span>
+														</a>&nbsp;
+													</td>
+												</tr>
+												<tr>
+													<td style="padding-bottom: 0px; padding-left: 10px; width: 100%">
+														<table>
+															<tbody>
+																<tr>
+																	<td style="width: 1%;">
+																		<img alt="Information" style="border-right-width: 0px; width: 20px; border-top-width: 0px;
+																			border-bottom-width: 0px; height: 20px; border-left-width: 0px; cursor: hand;"
+																			id="btnInfo" onclick="doInfoClick(this);" src="images/info.gif" />
+																	</td>
+																	<td style="padding-left: 5px;">
+																		<a style="font-family: Tahoma; color: white; font-size: 10pt; text-decoration: none"
+																			id="linkStepTitle"><span id="lblStepTitle" style="white-space: nowrap;">Title: </span>
+																		</a>&nbsp;
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr style="width: 99%;" id="trMainContent">
+				<td style="width: 100%; text-align: center;padding:5px" id="tdMainContent">
+					<div style="overflow: hidden; background-color: green;" id="divStepContent">
+						<table style="width: 100%; background-color: white;" id="tblInnerContent">
+							<tbody>
+								<tr>
+									<td style="width: 100px; display: ; vertical-align: text-top" id="tdParentSideBar">
+										<table id="tblSideBar" style="background-color: Fuchsia">
+											<tbody>
+												<tr>
+													<td id="tdSideBar" class="tdSidebarNoTable" style="vertical-align: text-top">
+														SideBar
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+									<td id="tdStepContent">
+										<table id="tblStepContent" style="background-color: Maroon">
+											<tbody>
+												<tr id="trStepHTM">
+													<td id="tdStepHTML" class="tdStepHTMNoTable" style="vertical-align: text-top; width: 100%;
+														text-align: left">
+														<div style="border-bottom: red 1px solid; border-left: red 0px solid; width: 0px;
+															overflow: auto; border-top: red 0px solid; border-right: red 0px solid" id="divStepHTM">
+															StepHTML
+														</div>
+													</td>
+												</tr>
+												
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<!--<tr style="display: " id="trAttachment">
+									<td style="text-align: center" colspan=2>-->
+										<div style="display:none;background-color:Orange;vertical-align:bottom" id="tblAttachmentsPanels">
+											<table id="tblAttachments" class="MainTableAttachmentClass">
+												<tbody>
+													<tr>
+														<td class="CellForAttachmentHeader" style="text-align: left">
+															<span id="lblAttachmentHeader" style="white-space: nowrap;" class="propLabelBold">
+																Attachments </span>
+														</td>
+													</tr>
+													<tr id="trAttachments">
+														<td style="padding-bottom: 5px; padding-left: 5px; padding-right: 5px; padding-top: 5px;
+															text-align: left">
+															<div class="Attachment">
+																<div id="Attachment_wrapper" class="Attachment_Wrapper">
+																	<div style="left: 0px" id="Attachment_content" class="Attachment_Content">
+																		<table id="tblAttachmentContent">
+																			<tbody>
+																			</tbody>
+																		</table>
+																	</div>
+																</div>
+															</div>
+															<div id="divAttachmentSlider" class="AttachmentSlider">
+																<div style="width: 200px; height: 22px" id="radSliderAttachment" class="RadSlider RadSlider_WebBlue ">
+																	<input id="radSliderAttachment_ClientState" name="radSliderAttachment_ClientState"
+																		type="hidden">
+																</div>
+															</div>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									<!--</td>
+								</tr>-->
+					</div>
+				</td>
+			</tr>
+			<tr id="trMainFooter">
+				<td style="width: 100%; height: 10px; vertical-align: text-top" id="tdMainFooter">
+					<div id="divFooter">
+						<table id="tblFooter">
+							<tbody>
+								<tr style="background-image: url(images/progress-section.gif); height: 44" id="trMainStepStatusControls">
+									<td>
+										<table>
+											<tbody>
+												<tr id="trStepStatusControls">
+													<td style="padding-left: 5px; width: 20px">
+														<!--showhideNavigationBar-->
+														<img style="cursor: hand" id="imgHide" onmouseover='DoMouseOver(this,"images/button-hide-on.png")'
+															onmouseout='DoMouseOut(this,"images/button-hide-off.png")' onclick="showhideNavigationBar()"
+															alt="Hide status bar" src="images/button-hide-off.png">
+													</td>
+													<td style="padding-left: 8px; padding-right: 9px; padding-top: 0px; text-align: right"
+														id="tdMainStepStatus">
+														<div style="display: block" id="DivStepStatusPanel">
+															<div id="DivStepStatus">
+																<table>
+																	<tbody>
+																		<tr id="trStepStatus">
+																			<td style="padding-left: 8px; display: none; padding-top: 2px; width: 23px; text-align: left">
+																				<img style="cursor: hand" id="imgShowHide" onmouseover='DoMouseOver(this,"images/show-hide-on.png")'
+																					alt="" onmouseout='DoMouseOut(this,"images/show-hide.png")' onclick="ShowHideNav()"
+																					src="images/show-hide.png">
+																			</td>
+																			<td style="padding-bottom: 0px; padding-left: 10px; padding-top: 0px">
+																				<table>
+																					<tbody>
+																						<tr id="trSectionStatus">
+																							<td>
+																								<table>
+																									<tbody>
+																										<tr>
+																											<td style="width: 80px; padding-right: 18px; text-align: right; white-space: nowrap">
+																												<span style="cursor: hand; white-space: nowrap;" id="lblSectionStatus" class="propLabelLightgreySmall"
+																													onmouseover='doUnderLine(this)' onmouseout='undoUnderLine(this)' onclick="OpenStepList('0','3193')">
+																													CBT Progress </span>
+																											</td>
+																											<td style="width: 100%" id="tdCBTStatus">
+																												<table style="height: 10px" id="tblCBTStatus">
+																													<tbody>
+																														<tr>
+																															<td id="SectionStatus0" class="CurrentSectionSeparator" title="Introduction" onclick="GoToStepIntro('0')">
+																																<img alt="" style="visibility: hidden; height: 1px; width: 1px" src="images/Filler.jpg">
+																															</td>
+																															<td id="SectionStepStatus0" class="ClassNameSectionPreProcedureCurrent" style="width: 17.24%">
+																																<table style="width: 100%" id="tblStepInsideSectionPreProcedure" class="tblStepsInsideSection">
+																																	<tbody>
+																																		<tr>
+																																			<td title="Introduction" onclick="GoToStepIntro('0')">
+																																				<img alt="" style="visibility: hidden; height: 1px; width: 1px" src="images/Filler.jpg">
+																																			</td>
+																																			<td title="Procedure Details" onclick="GoToStepIntro('1')">
+																																				<img alt="" style="visibility: hidden; height: 1px; width: 1px" src="images/Filler.jpg">
+																																			</td>
+																																			<td title="Effective Changes" onclick="GoToStepIntro('2')">
+																																				<img alt="" style="visibility: hidden; height: 1px; width: 1px" src="images/Filler.jpg">
+																																			</td>
+																																			<td title="Table Of Contents" onclick="GoToStepIntro('3')">
+																																				<img alt="" style="visibility: hidden; height: 1px; width: 1px" src="images/Filler.jpg">
+																																			</td>
+																																		</tr>
+																																	</tbody>
+																																</table>
+																															</td>
+																														</tr>
+																													</tbody>
+																												</table>
+																											</td>
+																											<td>
+																												<span id="lblCBTCompletionValue" class="propLabelWhiteSmall"></span>
+																											</td>
+																										</tr>
+																									</tbody>
+																								</table>
+																							</td>
+																						</tr>
+																						<tr style="height: 4px">
+																							<td>
+																							</td>
+																						</tr>
+																						<tr id="trStepStatusTable">
+																							<td>
+																								<table>
+																									<tbody>
+																										<tr>
+																											<td style="width: 80px; padding-right: 4px; text-align: right; white-space: nowrap">
+																												<span style="cursor: hand; white-space: nowrap;" id="lblStepStatus" class="propLabelLightgreySmall"
+																													onmouseover='doUnderLine(this)' onmouseout='undoUnderLine(this)' onclick="OpenStepList('0','3193');">
+																													Section Progress </span>
+																											</td>
+																											<td style="width: 100%;" id="tdStepStatus">
+																												<div id="divStepStatus0">
+																													<table id="tblStatus" style="height: 10px">
+																														<tbody>
+																															<tr>
+																																<td class="ClassNamePreProcedure" title="Introduction" onclick="GoToStepIntro('0')">
+																																	<img style="visibility: hidden; height: 1px; width: 1px" src="images/Filler.jpg"
+																																		alt=''>
+																																</td>
+																																<td class="ClassNamePreProcedure" title="Procedure Details" onclick="GoToStepIntro('1')">
+																																	<img style="visibility: hidden; height: 1px; width: 1px" src="images/Filler.jpg"
+																																		alt=''>
+																																</td>
+																																<td class="ClassNamePreProcedure" title="Procedure Attachments" onclick="GoToStepIntro('2')">
+																																	<img style="visibility: hidden; height: 1px; width: 1px" src="images/Filler.jpg"
+																																		alt=''>
+																																</td>
+																																<td class="ClassNamePreProcedure" title="Effective Changes" onclick="GoToStepIntro('3')">
+																																	<img style="visibility: hidden; height: 1px; width: 1px" src="images/Filler.jpg"
+																																		alt=''>
+																																</td>
+																																<td class="ClassNamePreProcedure" title="Table Of Contents" onclick="GoToStepIntro('4')">
+																																	<img style="visibility: hidden; height: 1px; width: 1px" src="images/Filler.jpg"
+																																		alt=''>
+																																</td>
+																															</tr>
+																														</tbody>
+																													</table>
+																												</div>
+																											</td>
+																											<td>
+																												<span id="lblStepCompletionValue" class="propLabelWhiteSmall"></span>
+																											</td>
+																										</tr>
+																									</tbody>
+																								</table>
+																							</td>
+																						</tr>
+																					</tbody>
+																				</table>
+																			</td>
+																		</tr>
+																	</tbody>
+																</table>
+															</div>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr style="background-image: url(images/show-bar.png); padding-left: 5px; display: none;
+									height: 10px" id="trShowHideBar">
+									<td>
+										<img style="cursor: hand" onmouseover='DoMouseOver(this,"images/button-show-on.png")'
+											onmouseout='DoMouseOut(this,"images/button-show-off.png")' onclick="showhideNavigationBar()"
+											alt="Show status bar" src="images/button-show-off.png">
+									</td>
+								</tr>
+								<tr id="trNavigationControls">
+									<td style="background-image: url(images/Navigation-background.png); padding-top: 0px;
+										vertical-align: text-top; text-align: center; width: 100%">
+										<table>
+											<tbody>
+												<tr>
+													<td style="text-align: left; padding-left: 15px; width: 200px">
+														<table style="width: 1%">
+															<tbody>
+																<tr>
+																	<td>
+																		<div id="divBtnExit" style="display: inline; vertical-align: middle; height: 30px"
+																			ondragstart='event.returnValue=false;' tabindex='0' onkeypress='btnExitCBTEnterPress()'
+																			onmouseup="btnExitCBTmOverBtn(this)" onmouseover="btnExitCBTmOverBtn(this)" title=""
+																			onmouseout="btnExitCBTmOutBtn(this)" onmousedown="btnExitCBTmDownBtn(this)" onclick="btnExitCBTbtnClick();if(btnExitCBTisBtnEnabled()){}">
+																			<table style="display: inline; cursor: default; width: 75px; height: 30px; border: 2px"
+																				id="tblbtnExitCBT">
+																				<tbody>
+																					<tr>
+																						<td style="padding-left: 3px; background-image: url('images/button-left.png')" id="btnExitCBTtdLeftCap">
+																						</td>
+																						<td style="padding-left: 0px; text-align: center; width: 100%; background-image: url('images/button-middle.png')"
+																							id="btnExitCBTtdContent">
+																							<span style="width: 0%; white-space: nowrap;" id="btnExitCBTtxt" class="buttonClassWhite">
+																								Exit</span>
+																						</td>
+																						<td style="padding-left: 3px; background-image: url('images/button-right.png')" id="btnExitCBTtdRightCap">
+																						</td>
+																					</tr>
+																				</tbody>
+																			</table>
+																		</div>
+																	</td>
+																	<td>
+																		<img style="cursor: hand; vertical-align: bottom" id='imgSettings' onmouseover='DoMouseOver(this,"images/setting-on.png")'
+																			onmouseout='DoMouseOut(this,"images/settings.png")' onclick='ShowSettings(this)'
+																			alt='Settings' src="images/settings.png" />
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+													<td style="text-align: right; padding-left: 0px;">
+														<table style="width: 100%">
+															<tbody>
+																<tr>
+																	<td style="padding-right: 15px">
+																	</td>
+																	<td style="padding-right: 5px">
+																		<div style="display: block" id="btnFlagPanel">
+																			<img style="border-right-width: 0px;border-top-width:0px;border-bottom-width: 0px;visibility:hidden;border-left-width: 0px; vertical-align: bottom" id="btnFlag" alt="Flag Current Step" src="images/button-flag.png" />
+																		</div>
+																	</td>
+																	<td style="width: 20%">
+																		<div style="visibility: hidden" id="divAcknowledge">
+																			<table style="width: 1px; border-collapse: collapse; border-spacing: 0; padding: 0px 0px 0px 0px;">
+																				<tbody>
+																					<tr>
+																						<td style="padding-right: 10px">
+																							<img style="visibility: hidden; cursor: hand; vertical-align: bottom" id="imgRestartReading"
+																								onmouseover='DoMouseOver(this,"images/replay-on.png")' onmouseout='DoMouseOut(this,"images/replay.png")'
+																								onclick="StopReading();Speak();" alt="Replay" src="images/replay.png">
+																						</td>
+																						<td>
+																							<div style="display: block" id="btnReviewedPanel">
+																								<img style="border-right-width: 0px; border-top-width: 0px; border-bottom-width: 0px;
+																									border-left-width: 0px; vertical-align: bottom" id="btnReviewed" alt="" src="images/check-box.png" />
+																							</div>
+																						</td>
+																						<td style="padding-left: 2px">
+																							<span id="lblAck" class="propLabelWhite" style="white-space: nowrap;">Acknowledge
+																							</span>
+																						</td>
+																					</tr>
+																				</tbody>
+																			</table>
+																		</div>
+																	</td>
+																	<td style="text-align: right; padding-right: 15px; width: 20%; text-align: right">
+																		<table style="width: 1px; border-collapse: collapse; border-spacing: 0; padding: 0px 0px 0px 0px;">
+																			<tbody>
+																				<tr>
+																					<td>
+																						<img id="btnPreviousContext" onmouseover='DoMouseOver(this,"images/context-left-on.png")'
+																							style="vertical-align: bottom" onmouseout='DoMouseOut(this,"images/context-left.png")'
+																							onclick="PreviousContextClick(this,event)" alt="Navigation Shortcuts" src="images/context-left.png">
+																					</td>
+																					<td>
+																						<div style="display: block" id="btnPreviousPanel">
+																							<img style="border-right-width: 0px; border-top-width: 0px; border-bottom-width: 0px;
+																								border-left-width: 0px; vertical-align: bottom" id="btnPrevious" onclick="DoPrevious()"
+																								alt="Previous Step" src="images/button-Previous.png" onmouseover='DoMouseOver(this,"images/button-Previous-on.png")'
+																								onmouseout='DoMouseOut(this,"images/button-Previous.png")' />
+																						</div>
+																					</td>
+																					<td>
+																						<img style="border-right-width: 0px; border-top-width: 0px; border-bottom-width: 0px;
+																							border-left-width: 0px; vertical-align: bottom" id="btnPlay" onmouseover='DoMouseOver(this,"images/button-play-on.png")'
+																							onmouseout='DoMouseOut(this,"images/button-Play.png")' onclick="btnPlayClick();return false;"
+																							src="images/button-Play.png" alt="" />
+																					</td>
+																					<td>
+																						<div style="display: block" id="btnNextPanel">
+																							<img style="border-right-width: 0px; border-top-width: 0px; border-bottom-width: 0px;
+																								border-left-width: 0px; vertical-align: bottom" id="btnNext" onmouseover='DoMouseOver(this,"images/button-next-on.png")'
+																								onmouseout='DoMouseOut(this,"images/button-Next.png")' onclick="DoNext()"
+																								alt="Next Step" src="images/button-Next.png" />
+																						</div>
+																					</td>
+																					<td>
+																						<img id="btnNextContext" onmouseover='DoMouseOver(this,"images/context-right-on.png")'
+																							onmouseout='DoMouseOut(this,"images/context-right.png")' onclick="NextContextClick(this,event)"
+																							style="vertical-align: bottom" alt="Navigation Shortcuts" src="images/context-right.png">
+																					</td>
+																				</tr>
+																			</tbody>
+																		</table>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div id="divSettings" class="divSettings" style="display: none;">
+		<table id="tblSettings" class="tblSettings">
+			<tr id="trVolumeLabel">
+				<td class="tdVolumeText">
+					<span class="propLabelWhitebold">Volume</span>
+				</td>
+			</tr>
+			<tr id="trVolumeSlider">
+				<td class="tdVolumeSlider">
+				</td>
+			</tr>
+			<tr>
+				<td class="tdTextSizeText">
+					<span style="white-space: nowrap" id="lblTextSize" class="PropLabelWhiteBold">Text
+						Size</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="tdTextSlider">
+				</td>
+			</tr>
+			<tr id="trSlideSpeed">
+				<td class="tdSlideSpeedText">
+					<span style="white-space: nowrap" id="lblSlideSpeed" class="PropLabelWhiteBold">Step
+						Speed</span>
+				</td>
+			</tr>
+			<tr id="trSlideSpeedslider">
+				<td class="tdSlideSpeedSlider">
+				</td>
+			</tr>
+			<tr id="trDisableSpeech">
+				<td class="tdDisableSpeech">
+					<input type="checkbox" value="Disable Speech" id="chkDisableSpeech" class="PropLabelWhiteBold" />
+				</td>
+			</tr>
+			<tr>
+				<td class="tdPrintButton">
+				</td>
+			</tr>
+		</table>
+	</div>
+	<input id="hiddenPlaySpeed" name="hiddenPlaySpeed" value="1000" type="hidden">
+	<input id="hiddenPlaySpeedController" name="hiddenPlaySpeedController" value="1"
+		type="hidden">
+	<input id="hiddenMOCComment" name="hiddenMOCComment" type="hidden">
+	<input id="hiddenCurrentStepIDX" name="hiddenCurrentStepIDX" type="hidden">
+	<input id="hiddenCautionIDS" name="hiddenCautionIDS" type="hidden">
+	<input id="hiddenNoteIDS" name="hiddenNoteIDS" type="hidden">
+	<input id="hiddenWarningIDS" name="hiddenWarningIDS" type="hidden">
+	<input id="hiddenWCNAcknowledge" name="hiddenWCNAcknowledge" type="hidden">
+	<input id="hiddenSectionStepNumbers" name="hiddenSectionStepNumbers" type="hidden">
+	<input id="hiddenStepIndex" name="hiddenStepIndex" value="0" type="hidden">
+	<input id="hiddenLastStepIndex" name="hiddenLastStepIndex" value="0" type="hidden">
+	<input id="hiddenLastStepID" name="hiddenLastStepID" value="0" type="hidden">
+	<input id="hiddenUseNextPrevious" name="hiddenUseNextPrevious" value="NP" type="hidden">
+	<input id="hiddenPlayMode" name="hiddenPlayMode" value="N" type="hidden">
+	<input id="txtSpeech" name="txtSpeech" type="hidden">
+</body>
+</html>

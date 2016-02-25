@@ -1,0 +1,57 @@
+﻿body {
+    margin: 0;
+    background-color: white;
+    font-family: Tahoma;
+    font-size: 11pt;
+}
+
+#filtered-list td {
+    vertical-align: top;
+    color: rgb(0, 36, 89);
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+
+#filtered-list .section td {
+    color: white;
+}
+
+#filtered-list tr.section {
+    background-color: dodgerblue;
+}
+
+
+#menu-header {
+    background: rgb(238,238,238);
+    padding: 5px;
+    border-top: rgb(220,220,220) 1px solid;
+    border-bottom: rgb(220,220,220) 1px solid;
+    vertical-align: central;
+}
+
+.link {
+    cursor: pointer;
+}
+
+table tr td.first-row {
+    border-top-width: 0;
+}
+
+#flatList .acknowledgement {
+    text-align: center;
+    background-color: lightgray;
+}
+
+    #flatList .acknowledgement .acknowledged {
+        background-color: lightgreen;
+    }
+
+#flatList tr.section {
+    background-color: dodgerblue;
+}
+
+#flatList .section td {
+    color: white;
+}
