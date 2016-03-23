@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+    <form class="form-horizontal">
+        <div class="container">
+            <div class="form-group row">
+                <br />
+                <label class="col-xs-3 control-label" style="font-weight: normal;">
+                    Change Request Title:
+                </label>
+                <div class="col-xs-9">
+                    <input type="text" class="form-control" rows="2" id="change_request_title" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-xs-3 control-label" style="font-weight: normal;">
+                    Type:
+                </label>
+                <div class="col-xs-9">
+                    <select class="form-control" id="moc_type">
+                        <option value="-1">None</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-xs-3 control-label" style="font-weight: normal;">
+                    Subtype:
+                </label>
+                <div class="col-xs-9">
+                    <select class="form-control" id="moc_subtype"></select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-xs-3 control-label" style="font-weight: normal;">
+                    Description:
+                </label>
+                <div class="col-xs-9">
+                    <textarea class="form-control" rows="2" id="description"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-xs-3 control-label" style="font-weight: normal;">
+                    Reason:
+                </label>
+                <div class="col-xs-9">
+                    <textarea class="form-control" rows="2" id="reason"></textarea>
+                </div>
+            </div>
+            <div class="row"></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table table-striped" id="mocNotesSummary">
+                        <tr id="mocNotesSummaryHeaderRow">
+                            <th>Step Id</th>
+                            <th>Step Title</th>
+                            <th>Comment</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row"></div>
+            <div class="form-group row" style="text-align: left">
+                <!--<div class="col-xs-3"></div>-->
+                <div class="col-xs-6">
+                    <input type="button" class="btn" style="width: 100%;" onclick="SubmitMoc()" value="Submit" />
+                </div>
+                <div class="col-xs-6">
+                    <input type="button" class="btn" style="width: 100%;" onclick="CloseMocWindow()" value="Discard Change Request and Complete" />
+                </div>
+            </div>
+        </div>
+    </form>
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var CrTypes,
+            MocTypeDdl = $("#moc_type"),
+            MocSubtypeDdl = $("#moc_subtype");
+        $(document).ready(function () {
+            if (parent.B_IGNORE_EXTERNAL_CALL !== undefined && !parent.B_IGNORE_EXTERNAL_CALL) {
+                //load global variables
+                var crTypesString = window.external.GetCrTypes();
+                CrTypes = JSON.parse(crTypesString);
+                //link control events
+                MocTypeDdl.change(function () {
+                    LoadSubTypeDropDown(CrTypes, MocTypeDdl.val(), MocSubtypeDdl);
+                });
+                //initial loading of ddl
+                LoadTypeDropDown(CrTypes, MocTypeDdl);
+                LoadSubTypeDropDown(CrTypes, MocTypeDdl.val(), MocSubtypeDdl);
+                LoadAllNoteMocs();
+            }
+        });
+        function LoadAllNoteMocs() {
+            var strAllNotesList = window.external.GetAllNotesMocForSession(),
+                allNotesList = JSON.parse(strAllNotesList),
+                stepInfo;
+
+            $.each(allNotesList, function (index, value) {
+                stepInfo = parent.GetStepInfoFromStepMapping(value.StepId, value.SharedProcId, value.SharedStepId);
+                var noteMocWithAuthor = value.NoteMoc + "<br/>  -" + value.UpdateByName;
+                $("#mocNotesSummary").append($("<tr></tr>")
+                    .append($("<td></td>").html(value.StepId))
+                    .append($("<td></td>").html(stepInfo.StepTitle))
+                    .append($("<td></td>").html(noteMocWithAuthor)));
+            });
+        }
+        //function GetStepText(stepId, sharedProcId, sharedStepId) {
+        //    return stepId + ";" + sharedProcId + ";" + sharedStepId;
+        //}
+        function LoadTypeDropDown(strObj, ddlControl) {
+            $.each(strObj, function () {
+                ddlControl.append($("<option></option>").val(this.TypeID).text(this.Type));
+            });
+        }
+        function LoadSubTypeDropDown(strObj, typeId, ddlControl) {
+            ddlControl.empty();
+            if (typeId == -1) {
+                ddlControl.append($("<option></option>").val(null).text("None"));
+            }
+            else if (strObj && strObj.length > 0) {
+                $.each(strObj, function () {
+                    if (this.TypeID == typeId) {
+                        $.each(this.SubTypes, function () {
+                            ddlControl.append($("<option></option>").val(this.SubTypeID).text(this.SubType));
+                        });
+                        return false;
+                    }
+                });
+            } else {
+                ddlControl.append($("<option></option>").val(null).text("None"));
+            }
+        }
+
+        function SubmitMoc() {
+            var changeRequestTitle = $('#change_request_title').val(),
+                    changeRequestDesc = $('#description').val(),
+                    changeRequestReson = $('#reason').val(),
+                    subTypeId = MocSubtypeDdl.val(),
+                    bIsValidInput = true;
+            if (!changeRequestTitle.trim() || !changeRequestDesc.trim() || !changeRequestReson.trim()) {
+                bIsValidInput = false;
+            }
+            if (bIsValidInput) {
+                if (parent.B_IGNORE_EXTERNAL_CALL !== undefined && !parent.B_IGNORE_EXTERNAL_CALL) {
+                    window.external.SubmitChangeRequest(changeRequestTitle, subTypeId, changeRequestDesc, changeRequestReson);
+                    window.external.CompleteSession();
+                    parent.window.external.Exit("", "");
+                }
+            } else {
+                alert("Please fill out all fields!");
+                return false;
+            }
+        }
+
+        function CloseMocWindow() {
+            parent.CloseMocSummary();
+            window.external.CompleteSession();
+            parent.window.external.Exit("", "");
+        }
+    </script>
+</body>
+</html>

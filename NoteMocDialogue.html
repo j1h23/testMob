@@ -11,14 +11,14 @@
                 <ul id="NoteContent" class="media-list">
                     <li class="media">
                         <div class="media-body">
-                            <small class="text-muted">No notes yet...</small>
+                            <small class="text-muted">No MOC notes yet...</small>
                         </div>
                     </li>
                 </ul>
                 <div class="panel">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="note" placeholder="Enter Note..." />
-                        <button id="btnSubmit" class="btn input-group-addon" onclick="SaveNote()">SUBMIT</button>
+                        <input type="text" class="form-control" id="note" placeholder="Enter Change Request Note..." />
+                        <button id="btnSubmit" class="btn input-group-addon" onclick="SaveNoteMoc()">SUBMIT</button>
                     </div>
                 </div>
             </div>
@@ -31,7 +31,7 @@
             StepInfo = GetStepInfo();
             if (StepInfo) {
                 if (!parent.B_IGNORE_EXTERNAL_CALL) {
-                    LoadNotes();
+                    LoadNotesMoc();
                 }
                 if (parent.State == 'Freeze') {
                     $('#note').prop("readonly", true);
@@ -43,16 +43,18 @@
                 window.scrollTo(0, document.body.scrollHeight);
             }
         });
-        function LoadNotes() {
+        function LoadNotesMoc() {
             var i,
                 $noteContent = $("#NoteContent"),
-                noteJsonStr = window.external.GetNotes(StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId);
+                $noteInput = $("#note"),
+                noteJsonStr = window.external.GetNotesMoc(StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId);
             if (noteJsonStr) {
                 var noteJson = JSON.parse(noteJsonStr);
                 if (noteJson.length > 0) {
                     $noteContent.empty();
                 }
                 for (i = 0; i < noteJson.length; i++) {
+                    //$noteInput.val(noteJson[i].Note);
                     $noteContent.append(
                         $("<li></li>", {
                             "class": "media"
@@ -62,6 +64,7 @@
                                 "class": "media-body",
                                 text: noteJson[i].Note
                             }))
+                        .append("<button><img src = 'images/icon-edit.png' style='width:30px;'></img></button>")
                         .append("<br />")
                         .append(
                             $("<small></small>", {
@@ -74,20 +77,50 @@
                 }
             }
         }
-        function SaveNote() {
+        //function LoadNotesMoc() {
+        //    var i,
+        //        $noteContent = $("#NoteContent"),
+        //        noteJsonStr = window.external.GetNotesMoc(StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId);
+        //    if (noteJsonStr) {
+        //        var noteJson = JSON.parse(noteJsonStr);
+        //        if (noteJson.length > 0) {
+        //            $noteContent.empty();
+        //        }
+        //        for (i = 0; i < noteJson.length; i++) {
+        //            $noteContent.append(
+        //                $("<li></li>", {
+        //                    "class": "media"
+        //                })
+        //                .append(
+        //                    $("<div></div>", {
+        //                        "class": "media-body",
+        //                        text: noteJson[i].Note
+        //                    }))
+        //                .append("<br />")
+        //                .append(
+        //                    $("<small></small>", {
+        //                        "class": "text-muted",
+        //                        text: noteJson[i].UpdateByName + " @ " + parent.ConvertMsToDateTimeHourMin(parseInt(noteJson[i].UpdateTime.substr(6)))
+        //                    })
+        //                )
+        //                .append("<hr />")
+        //            );
+        //        }
+        //    }
+        //}
+        function SaveNoteMoc() {
             if (!parent.B_IGNORE_EXTERNAL_CALL) {
                 try {
                     var note = $("#note").val();
-                    window.external.SaveNote(note, StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId);
+                    window.external.SaveNoteMoc(note, StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId);
                 } catch (e) {
                     alert(e);
                 }
                 $("#note").val("");
-                LoadNotes();
+                LoadNotesMoc();
                 window.scrollTo(0, document.body.scrollHeight);
             } else {
                 alert('Disabled for debugging purposes');
-                return false;
             }
         }
         function GetStepInfo() {

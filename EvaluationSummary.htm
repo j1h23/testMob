@@ -206,8 +206,14 @@
                         Employee_Signature_Date: datetimepicker.value().toJSON()
                     };
                     parent.SubmitEvalSummary(assessmentObject);
-                    window.external.CompleteSession();
-                    parent.window.external.Exit("", "");
+                    //check if change requests menu needs to load
+                    if (window.external.IsMocSession()) {
+                        parent.CloseEvaluation();
+                        parent.LaunchMocSummary();
+                    } else {
+                        window.external.CompleteSession();
+                        parent.window.external.Exit("", "");
+                    }
                 }
                 else {
                     alert("Please fill the required fields");

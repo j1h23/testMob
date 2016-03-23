@@ -323,6 +323,21 @@ function LoadUiControls() {
     noteWindowRefreshIcon.click(function (e) {
         Sync();
     });
+    $("#noteMocWindow").kendoWindow({
+        actions: ["Close"],
+        draggable: true,
+        content: "NoteMocDialogue.html",
+        height: "450px",
+        modal: true,
+        resizable: false,
+        width: "600px",
+        iframe: true
+    });
+    var noteMocWindow = $("#noteMocWindow").data("kendoWindow");
+    var noteMocWindowRefreshIcon = noteMocWindow.wrapper.find(".k-i-refresh");
+    noteMocWindowRefreshIcon.click(function (e) {
+        Sync();
+    });
     $("#attWindow").kendoWindow({
         actions: ["Refresh", "Close"],
         content: "AttachmentDialogue.html",
@@ -884,6 +899,11 @@ function IsSectionAllViewed(sectionId) {
         return false;
     }
 };
+function GetStepInfoFromStepMapping(stepId, sharedProcId, sharedStepId) {
+    var stepIndex = GetStepIndexFromStepMapping(stepId, sharedProcId, sharedStepId);
+    var stepInfo = window["step" + stepIndex];
+    return stepInfo;
+}
 function GetStepIndexFromStepMapping(stepId, sharedProcId, sharedStepId) {
     for (var i = 0; i < StepMappingsSortedByIndex.length; i++) {
         var stepMapping = StepMappingsSortedByIndex[i];
@@ -2446,7 +2466,8 @@ function btnshowEquipmentLimitList(limitList) {
 function btnExitCBTbtnClick() {
     if (State == 'Normal') {
         var bConfirmResponse = false,
-            bTrainingComplete = IsTrainingComplete();
+            bTrainingComplete = IsTrainingComplete(),
+            bIsMocSession;
         if (COMPLETION_CRITERIA == "I") {
             if (SESSION_TYPE == SessionTypeEnum.PerformanceEvaluation) {
                 if (!bTrainingComplete) {
@@ -2456,14 +2477,18 @@ function btnExitCBTbtnClick() {
                     }
                 }
                 else {
-                    LaunchEvaluationSummary();
+                    LaunchEvaluationSummary();//Launch MOC logic included in Eval Summary Page
                 }
             } else {
+                bIsMocSession = window.external.IsMocSession();
                 if (!bTrainingComplete) {
                     bConfirmResponse = confirm("You have not completed all steps. Are you sure you want to exit?");
-                }
-                if (bTrainingComplete || bConfirmResponse) {
+                } else if (bIsMocSession) {
+                    LaunchMocSummary();
+                } else {
                     window.external.CompleteSession();
+                }
+                if (!bIsMocSession && (bTrainingComplete || bConfirmResponse)) {
                     window.external.Exit("", "");
                 }
             }
@@ -2820,6 +2845,11 @@ function OpenNoteDialogue() {
     OpenKendoWindow("noteWindow", title, null);
 }
 
+function OpenNoteMocDialogue() {
+    var title = "Change Request Notes";
+    OpenKendoWindow("noteMocWindow", title, null);
+}
+
 function OpenAttachmentDialogue() {
     var title = "Upload Attachments";
     OpenKendoWindow("attWindow", title, null);
@@ -2890,14 +2920,19 @@ function GetCompetencyEvaluation() {
 function LaunchEvaluationSummary() {
     var title = "Evaluation Form",
     url = "EvaluationSummary.htm";
-    var win = OpenKendoWindow("evaluationSummaryWindow", title, url);
-    var timer = setInterval(function () {
-        if (win.closed) {
-            clearInterval(timer);
-            alert("Evaluation summary closed !");
-        }
-    }, 500);
+    OpenKendoWindow("evaluationSummaryWindow", title, url);
 }
+
+function LaunchMocSummary() {
+    var title = "Submit Change Request",
+    url = "MocSubmission.html";
+    OpenKendoWindow("noteMocWindow", title, url);
+}
+
+function CloseMocSummary() {
+    $("#noteMocWindow").data("kendoWindow").close();
+}
+
 function CloseEvaluation() {
     $("#evaluationSummaryWindow").data("kendoWindow").close();
 }
