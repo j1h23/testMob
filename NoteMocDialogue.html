@@ -6,21 +6,15 @@
 </head>
 <body>
     <div id="notesModal" class="container">
-        <div class="row">
-            <div class="container">
-                <ul id="NoteContent" class="media-list">
-                    <li class="media">
-                        <div class="media-body">
-                            <small class="text-muted">No MOC notes yet...</small>
-                        </div>
-                    </li>
+        <div class="container">
+
+            <div class="row">
+                <ul id="NoteContent" class="media-list" style="padding-top: 18px;">
                 </ul>
-                <div class="panel">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="note" placeholder="Enter Change Request Note..." />
-                        <button id="btnSubmit" class="btn input-group-addon" onclick="SaveNoteMoc()">SUBMIT</button>
-                    </div>
-                </div>
+
+            </div>
+            <div class="row">
+                <button id="btnSubmit" class="btn" onclick="SaveNoteMoc()" style="display: none">SUBMIT</button>
             </div>
         </div>
     </div>
@@ -46,68 +40,122 @@
         function LoadNotesMoc() {
             var i,
                 $noteContent = $("#NoteContent"),
-                $noteInput = $("#note"),
-                noteJsonStr = window.external.GetNotesMoc(StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId);
+                noteJsonStr = window.external.GetNotesMoc(StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId),
+                currentUserId = window.external.GetCurrentUserId,
+                noteUserId,
+                bHasSelfContent = false;
             if (noteJsonStr) {
                 var noteJson = JSON.parse(noteJsonStr);
                 if (noteJson.length > 0) {
                     $noteContent.empty();
                 }
                 for (i = 0; i < noteJson.length; i++) {
-                    //$noteInput.val(noteJson[i].Note);
-                    $noteContent.append(
-                        $("<li></li>", {
-                            "class": "media"
-                        })
-                        .append(
-                            $("<div></div>", {
-                                "class": "media-body",
-                                text: noteJson[i].Note
-                            }))
-                        .append("<button><img src = 'images/icon-edit.png' style='width:30px;'></img></button>")
-                        .append("<br />")
-                        .append(
-                            $("<small></small>", {
-                                "class": "text-muted",
-                                text: noteJson[i].UpdateByName + " @ " + parent.ConvertMsToDateTimeHourMin(parseInt(noteJson[i].UpdateTime.substr(6)))
+                    noteUserId = noteJson[i].UpdateByUserId;
+                    if (noteUserId == currentUserId) {
+                        bHasSelfContent = true;
+                        $noteContent.append(
+                            $("<li></li>", {
+                                "class": "media"
                             })
+                            .append(
+                                $("<div></div>", {
+                                    "class": "media-body",
+                                    "id": "media-body-self"
+                                })
+                                .append($("<div></div>", {
+                                        "style": "float:left;"
+                                    })
+                                    .append("<img src = 'images/icon-edit.png' style='width:30px; cursor:pointer; padding-right:5px; padding-top:5px;' onclick='EditNote(true)'></img>")
+                                )
+                                .append($("<div></div>", {
+                                        "style": "float:left;"
+                                    })
+                                    .append($('<div></div>', {
+                                        text: noteJson[i].Note,
+                                        "onclick": 'EditNote(true)',
+                                        id: "self-text"
+                                    }))
+                                    .append(
+                                        $("<small></small>", {
+                                            "class": "text-muted",
+                                            text: noteJson[i].UpdateByName + " @ " + parent.ConvertMsToDateTimeHourMin(parseInt(noteJson[i].UpdateTime.substr(6)))
+                                        })
+                                    ))
+                            )
+                            .append("<hr />")
+                        );
+                    } else {
+                        $noteContent.append(
+                            $("<li></li>", {
+                                "class": "media"
+                            })
+                            .append(
+                                $("<div></div>", {
+                                    "class": "media-body"
+                                })
+                                .append($("<div></div>", {
+                                    "style": "float:left;"
+                                })
+                                    .append($('<div></div>', {
+                                        text: noteJson[i].Note
+                                    }))
+                                    .append(
+                                        $("<small></small>", {
+                                            "class": "text-muted",
+                                            text: noteJson[i].UpdateByName + " @ " + parent.ConvertMsToDateTimeHourMin(parseInt(noteJson[i].UpdateTime.substr(6)))
+                                        })
+                                    ))
+                            )
+                            .append("<hr />")
+                        );
+                    }
+                }
+                if (!bHasSelfContent) {
+                    $noteContent.append(
+                    $("<li></li>", {
+                        "class": "media"
+                    })
+                    .append(
+                        $("<div></div>", {
+                            "class": "media-body",
+                            "id": "media-body-self"
+                        })
+                        .append($("<div></div>", {
+                            "style": "float:left;"
+                        })
+                            .append("<img src = 'images/icon-edit.png' style='width:30px; cursor:pointer; padding-right:5px; padding-top:5px;' onclick='EditNote(false)'></img>")
                         )
-                        .append("<hr />")
-                    );
+                        .append($("<div></div>", {
+                            "style": "float:left;"
+                        })
+                            .append($('<div></div>', {
+                                text: "Click To Add Chage Request Notes",
+                                "onclick": 'EditNote(false)',
+                                id: "self-text"
+                            }))
+                            )
+                    )
+                    .append("<hr />")
+                );
                 }
             }
         }
-        //function LoadNotesMoc() {
-        //    var i,
-        //        $noteContent = $("#NoteContent"),
-        //        noteJsonStr = window.external.GetNotesMoc(StepInfo.StepID, StepInfo.SharedProcId, StepInfo.SharedStepId);
-        //    if (noteJsonStr) {
-        //        var noteJson = JSON.parse(noteJsonStr);
-        //        if (noteJson.length > 0) {
-        //            $noteContent.empty();
-        //        }
-        //        for (i = 0; i < noteJson.length; i++) {
-        //            $noteContent.append(
-        //                $("<li></li>", {
-        //                    "class": "media"
-        //                })
-        //                .append(
-        //                    $("<div></div>", {
-        //                        "class": "media-body",
-        //                        text: noteJson[i].Note
-        //                    }))
-        //                .append("<br />")
-        //                .append(
-        //                    $("<small></small>", {
-        //                        "class": "text-muted",
-        //                        text: noteJson[i].UpdateByName + " @ " + parent.ConvertMsToDateTimeHourMin(parseInt(noteJson[i].UpdateTime.substr(6)))
-        //                    })
-        //                )
-        //                .append("<hr />")
-        //            );
-        //        }
-        //    }
-        //}
+        function EditNote(bIncludeUserContent) {
+            var selfText,
+                selfMediaBody = $("#media-body-self");
+            if (bIncludeUserContent) {
+                selfText = $("#self-text").text();
+            } else {
+                selfText = "";
+            }
+            selfMediaBody.empty();
+            selfMediaBody.append($("<input/>", {
+                "class": "form-control",
+                value: selfText,
+                id: "note"
+            }));
+            $("#btnSubmit").show();
+        }
         function SaveNoteMoc() {
             if (!parent.B_IGNORE_EXTERNAL_CALL) {
                 try {
@@ -117,8 +165,7 @@
                     alert(e);
                 }
                 $("#note").val("");
-                LoadNotesMoc();
-                window.scrollTo(0, document.body.scrollHeight);
+                window.parent.$("#noteMocWindow").data("kendoWindow").close();
             } else {
                 alert('Disabled for debugging purposes');
             }
